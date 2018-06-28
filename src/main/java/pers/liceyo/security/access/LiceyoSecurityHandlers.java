@@ -3,6 +3,8 @@ package pers.liceyo.security.access;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -19,13 +21,15 @@ import java.io.IOException;
  * @version 2018/6/26
  */
 public class LiceyoSecurityHandlers {
+    private final static RedirectStrategy REDIRECT_STRATEGY = new DefaultRedirectStrategy();
+
     /**
      * 登录失败后处理
      * @return handler
      */
     public static AuthenticationFailureHandler failureHandler(){
         return (request, response, e) -> {
-            request.getRequestDispatcher("/login?error").forward(request,response);
+            REDIRECT_STRATEGY.sendRedirect(request,response,"/login?error");
         };
     }
 
@@ -41,7 +45,7 @@ public class LiceyoSecurityHandlers {
             if(returnUrl!=null&&(url=String.valueOf(returnUrl)).length()>0){
                 response.sendRedirect(url);
             }else{
-                response.sendRedirect(request.getContextPath()+"/index");
+                REDIRECT_STRATEGY.sendRedirect(request,response,"/index");
             }
         };
     }
@@ -57,7 +61,7 @@ public class LiceyoSecurityHandlers {
                 response.getWriter().flush();
                 response.getWriter().close();
             } else {
-                response.sendRedirect(request.getContextPath()+"/accessDenied");
+                REDIRECT_STRATEGY.sendRedirect(request,response,"/accessDenied");
             }
         };
     }
@@ -73,7 +77,7 @@ public class LiceyoSecurityHandlers {
                 response.getWriter().flush();
                 response.getWriter().close();
             } else {
-                response.sendRedirect(request.getContextPath()+"/login");
+                REDIRECT_STRATEGY.sendRedirect(request,response,"/login");
             }
         };
     }
