@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4"
+      xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title sec:authentication="name"></title>
+</head>
+<body>
+<div sec:authorize="authenticated">
+    <div sec:authentication="name"></div>
+</div>
+<div sec:authorize="anonymous">
+    <div>游客你好</div>
+</div>
+<button id="users">testAjax</button>
+<button id="users2">testAjax2</button>
+<form th:action="@{/logout}" method="post">
+    <input type="submit" value="logout">
+</form>
+<div id="show"></div>
+<script th:src="@{/js/jquery.min.js}"></script>
+<div th:replace="ajaxSetup :: handler"></div>
+<script th:inline="javascript">
+    var helloUrl=[[@{/hello}]];
+    $("#users").click(function () {
+        $.ajax({
+            url:helloUrl,
+            method:"GET",
+            success:function (result,status,xhr) {
+                $("#show").html(result);
+            },
+            error:function (xhr,status,error) {
+                console.info("xhr:"+xhr);
+                console.info("status:"+status);
+                console.info("error:"+error);
+                $("#show").html(error);
+            }
+        });
+    });
+    var helloUrl2=[[@{/hello2}]];
+    $("#users2").click(function () {
+        $.ajax({
+            url:helloUrl2,
+            method:"GET",
+            success:function (result,status,xhr) {
+                $("#show").html(result);
+            },
+            error:function (xhr,status,error) {
+                console.info("xhr:"+xhr);
+                console.info("status:"+status);
+                console.info("error:"+error);
+                $("#show").html(error);
+            }
+        });
+    });
+</script>
+</body>
+</html>

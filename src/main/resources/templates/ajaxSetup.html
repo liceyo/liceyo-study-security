@@ -1,0 +1,34 @@
+<script th:fragment="handler" th:inline="javascript" xmlns:th="http://www.w3.org/1999/xhtml">
+    /*统一Ajax处理*/
+    $.ajaxSetup({
+        complete: function(xhr,status) {
+            ajaxPermission(xhr);
+        }
+    });
+    function getTopWindow(){
+        var p = window;
+        while(p !== p.parent){
+            p = p.parent;
+        }
+        return p;
+    }
+    var loginUrl=[[@{/login}]];
+        var accessDeniedUrl=[[@{/accessDenied}]];
+            function ajaxPermission(xhr) {
+                var ajaxStatus = xhr.getResponseHeader('ajaxStatus');
+                console.info(ajaxStatus);
+                var top = getTopWindow();
+                if (ajaxStatus === 'timeout') {
+                    var yes = confirm('由于您长时间没有操作, session已过期, 请重新登录.');
+                    if (yes) {
+                        top.location.href = loginUrl;
+                    }
+                }
+                if (ajaxStatus === 'login') {
+                    top.location.href = loginUrl;
+                }
+                if (ajaxStatus === 'accessDenied'){
+                    top.location.href =accessDeniedUrl;
+                }
+            }
+</script>
