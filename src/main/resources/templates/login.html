@@ -12,6 +12,9 @@
 <div th:if="${param.logout}">
     已注销登录
 </div>
+<div th:if="${param.expired}">
+    session超时
+</div>
 <form th:action="@{/login}" method="post">
     <div><label> 用户名 : <input type="text" name="username"/> </label></div>
     <div><label> 密码: <input type="password" name="password"/> </label></div>

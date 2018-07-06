@@ -58,7 +58,7 @@ public class Role implements Serializable{
 
     public static Role defaultRole(){
         Role role=new Role();
-        role.setId("0");
+        role.setId("ROLE_LOGIN");
         role.setLevel(99);
         role.setRoleName("none");
         role.setDescription("空角色");

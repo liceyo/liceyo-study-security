@@ -156,4 +156,15 @@ public class User implements UserDetails,Serializable{
         result = 31 * result + (state != null ? state.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", nickName='" + nickName + '\'' +
+                ", state=" + state +
+                '}';
+    }
 }

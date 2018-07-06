@@ -32,30 +32,6 @@ public class LiceyoSecurityInterceptor extends AbstractSecurityInterceptor imple
     private LiceyoMetadataSource liceyoMetadataSource;
 
     /**
-     * UnanimousBased 决策
-     * @return 决策
-     */
-    @Bean
-    public UnanimousBased setUnanimousBased(){
-        List<AccessDecisionVoter<?>> decisionVoters =new ArrayList<>();
-        AccessDecisionVoter<?> voter=new LiceyoRoleVoter();
-        decisionVoters.add(voter);
-        return new UnanimousBased(decisionVoters);
-    }
-
-    /**
-     * AffirmativeBased 决策
-     * @return 决策
-     */
-    @Bean
-    public AffirmativeBased affirmativeBased(){
-        List<AccessDecisionVoter<?>> decisionVoters =new ArrayList<>();
-        AccessDecisionVoter<?> voter=new LiceyoRoleVoter();
-        decisionVoters.add(voter);
-        return new AffirmativeBased(decisionVoters);
-    }
-
-    /**
      * 指定决策器
      * @param manager 决策器
      */
@@ -65,7 +41,7 @@ public class LiceyoSecurityInterceptor extends AbstractSecurityInterceptor imple
     }
 
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
+    public void init(FilterConfig filterConfig) {
     }
 
     @Override

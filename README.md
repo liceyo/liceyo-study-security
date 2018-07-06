@@ -13,9 +13,3 @@
 4. 使用Redis记录Spring Session。
 
 5. 简单完成各种情况下从Ajax请求跳转到页面的处理。
-
-问题：
- 
-1. permitAll失效，未找到原因，可能是重写了拦截器或者MetadataSource的原因。
-
-2. session过期后Ajax请求会请求到登录页面，可能是因为cookie的原因，又跳转回首页，就这样循环，等段时间才能正常访问。

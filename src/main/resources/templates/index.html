@@ -8,15 +8,15 @@
 <body>
 <div sec:authorize="authenticated">
     <div sec:authentication="name"></div>
+    <form th:action="@{/logout}" method="post">
+        <input type="submit" value="logout">
+    </form>
 </div>
 <div sec:authorize="anonymous">
     <div>游客你好</div>
 </div>
 <button id="users">testAjax</button>
 <button id="users2">testAjax2</button>
-<form th:action="@{/logout}" method="post">
-    <input type="submit" value="logout">
-</form>
 <div id="show"></div>
 <script th:src="@{/js/jquery.min.js}"></script>
 <div th:replace="ajaxSetup :: handler"></div>

@@ -1,10 +1,15 @@
 package pers.liceyo.security.access;
 
+import javafx.beans.binding.When;
+import jdk.nashorn.internal.objects.annotations.Where;
 import org.springframework.security.access.AccessDecisionVoter;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.FilterInvocation;
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * 简单角色投票器
@@ -35,18 +40,20 @@ public class LiceyoRoleVoter implements AccessDecisionVoter<FilterInvocation> {
         if (authentication==null){
             return ACCESS_DENIED;
         }
-        boolean notNeedAuth="anonymousUser".equals(authentication.getPrincipal());
-        if (!notNeedAuth){
-            boolean access=authentication.getAuthorities().stream()
-                    .anyMatch(ga-> {
-                        String gaAuthority = ga.getAuthority();
-                        return gaAuthority != null && collection.stream()
-                                .anyMatch(configAttribute -> configAttribute.getAttribute().equals(gaAuthority));
-                    });
-            if (access){
+        for (ConfigAttribute attribute : collection) {
+            String needRole = attribute.getAttribute();
+            if ("ROLE_LOGIN".equals(needRole)) {
+                //如果是默认用户
+                if (authentication instanceof AnonymousAuthenticationToken) {
+                    //如果是未授权的用户则抛出未授权
+                    throw new BadCredentialsException("未登录");
+                } else {
+                    return ACCESS_DENIED;
+                }
+            }
+            boolean access = authentication.getAuthorities().stream().anyMatch(ga -> ga.getAuthority().equals(needRole));
+            if (access) {
                 return ACCESS_GRANTED;
-            }else {
-                return ACCESS_DENIED;
             }
         }
         return ACCESS_DENIED;

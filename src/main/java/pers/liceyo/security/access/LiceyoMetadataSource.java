@@ -2,6 +2,7 @@ package pers.liceyo.security.access;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.ConfigAttribute;
+import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 import pers.liceyo.security.config.WebSecurityConfig;
 import pers.liceyo.security.domain.Permission;
 import pers.liceyo.security.domain.PermissionRepository;
+import pers.liceyo.security.properties.WebSecurityProperties;
 import pers.liceyo.security.utils.EncryptUtil;
 import pers.liceyo.security.domain.Role;
 import pers.liceyo.security.domain.RoleRepository;
@@ -27,6 +29,8 @@ public class LiceyoMetadataSource implements FilterInvocationSecurityMetadataSou
     private RoleRepository roleRepository;
     @Autowired
     private PermissionRepository permissionRepository;
+    @Autowired
+    private WebSecurityProperties webSecurityProperties;
     /**
      * 所有权限
      */
@@ -45,10 +49,9 @@ public class LiceyoMetadataSource implements FilterInvocationSecurityMetadataSou
     @Override
     public Collection<ConfigAttribute> getAttributes(Object object) throws IllegalArgumentException {
         final FilterInvocation invocation = (FilterInvocation) object;
-        String requestUrl = invocation.getRequestUrl();
         //如果当前请求为permitAll时，不进行决策
         HttpServletRequest request = invocation.getRequest();
-        boolean match = Arrays.stream(WebSecurityConfig.PERMIT_URLS)
+        boolean match = webSecurityProperties.getPermitUrls().stream()
                 .anyMatch(url -> LiceyoRequestMatcher.matches(url, request));
         if (match){
             return null;

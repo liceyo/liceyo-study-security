@@ -8,6 +8,7 @@ import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.session.InvalidSessionStrategy;
 
 import javax.servlet.ServletException;
@@ -56,6 +57,7 @@ public class LiceyoSecurityHandlers {
      */
     public static AccessDeniedHandler accessDeniedHandler(){
         return (request, response, accessDeniedException) -> {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             if (LiceyoRequestMatcher.isAjaxRequest(request)) {
                 response.setHeader("ajaxStatus", "accessDenied");
                 response.getWriter().flush();
@@ -77,7 +79,17 @@ public class LiceyoSecurityHandlers {
                 response.getWriter().flush();
                 response.getWriter().close();
             } else {
-                REDIRECT_STRATEGY.sendRedirect(request,response,"/login");
+                REDIRECT_STRATEGY.sendRedirect(request,response,"/login?expired");
+            }
+        };
+    }
+
+    public static LogoutSuccessHandler logoutSuccessHandler(){
+        return (request, response, authentication) -> {
+            try {
+                REDIRECT_STRATEGY.sendRedirect(request,response,"/login?logout");
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         };
     }
